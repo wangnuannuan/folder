@@ -1,76 +1,76 @@
 #include "sys.h"
 
-u8 Flag_Left, Flag_Right, Flag_Direction = 0;	//À¶ÑÀÒ£¿ØÏà¹ØµÄ±äÁ¿
-u8 Flag_Stop = 1, Flag_Show = 0;	//Í£Ö¹±êÖ¾Î»ºÍ ÏÔÊ¾±êÖ¾Î» Ä¬ÈÏÍ£Ö¹ ÏÔÊ¾´ò¿ª
-int Encoder_A, Encoder_B, Encoder_C, Encoder_D;	//±àÂëÆ÷µÄÂö³å¼ÆÊý
-long int Position_A, Position_B, Position_C, Position_D, Rate_A, Rate_B, Rate_C, Rate_D;	//PID¿ØÖÆÏà¹Ø±äÁ¿
-int Encoder_A_EXTI;		//Í¨¹ýÍâ²¿ÖÐ¶Ï¶ÁÈ¡µÄ±àÂëÆ÷Êý¾Ý                       
-long int Motor_A, Motor_B, Motor_C, Motor_D;	//µç»úPWM±äÁ¿
-long int Target_A, Target_B, Target_C, Target_D;	//µç»úÄ¿±êÖµ
-int Voltage;			//µç³ØµçÑ¹²ÉÑùÏà¹ØµÄ±äÁ¿
-float Show_Data_Mb;		//È«¾ÖÏÔÊ¾±äÁ¿£¬ÓÃÓÚÏÔÊ¾ÐèÒª²é¿´µÄÊý¾Ý                         
-u8 delay_50, delay_flag;	//ÑÓÊ±Ïà¹Ø±äÁ¿
-u8 Run_Flag = 0;		//À¶ÑÀÒ£¿ØÏà¹Ø±äÁ¿ºÍÔËÐÐ×´Ì¬±êÖ¾Î»
-u8 rxbuf[8], Urxbuf[8], CAN_ON_Flag = 0, Usart_ON_Flag = 0, PS2_ON_Flag = 0, Usart_Flag, PID_Send, Flash_Send;	//CANºÍ´®¿Ú¿ØÖÆÏà¹Ø±äÁ¿
-u8 txbuf[8], txbuf2[8], Turn_Flag;	//CAN·¢ËÍÏà¹Ø±äÁ¿
-float Pitch, Roll, Yaw, Move_X, Move_Y, Move_Z;	//ÈýÖá½Ç¶ÈºÍXYZÖáÄ¿±êËÙ¶È
-u16 PID_Parameter[10], Flash_Parameter[10];	//FlashÏà¹ØÊý×é
-float Position_KP = 40, Position_KI = 0, Position_KD = 40;	//Î»ÖÃ¿ØÖÆPID²ÎÊý
-float Velocity_KP = 10, Velocity_KI = 10;	//ËÙ¶È¿ØÖÆPID²ÎÊý
-int RC_Velocity = 45, RC_Position = 3000;	//ÉèÖÃÒ£¿ØµÄËÙ¶ÈºÍÎ»ÖÃÖµ
+u8 Flag_Left, Flag_Right, Flag_Direction = 0;
+u8 Flag_Stop = 1, Flag_Show = 0;
+int Encoder_A, Encoder_B, Encoder_C, Encoder_D;
+long int Position_A, Position_B, Position_C, Position_D, Rate_A, Rate_B, Rate_C, Rate_D;
+int Encoder_A_EXTI;                  
+long int Motor_A, Motor_B, Motor_C, Motor_D;
+long int Target_A, Target_B, Target_C, Target_D;
+int Voltage;
+float Show_Data_Mb;                       
+u8 delay_50, delay_flag;	//ï¿½ï¿½Ê±ï¿½ï¿½Ø±ï¿½ï¿½ï¿½
+u8 Run_Flag = 0;		//ï¿½ï¿½ï¿½ï¿½Ò£ï¿½ï¿½ï¿½ï¿½Ø±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×´Ì¬ï¿½ï¿½Ö¾Î»
+u8 rxbuf[8], Urxbuf[8], CAN_ON_Flag = 0, Usart_ON_Flag = 0, PS2_ON_Flag = 0, Usart_Flag, PID_Send, Flash_Send;	//CANï¿½Í´ï¿½ï¿½Ú¿ï¿½ï¿½ï¿½ï¿½ï¿½Ø±ï¿½ï¿½ï¿½
+u8 txbuf[8], txbuf2[8], Turn_Flag;	//CANï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø±ï¿½ï¿½ï¿½
+float Pitch, Roll, Yaw, Move_X, Move_Y, Move_Z;	//ï¿½ï¿½ï¿½ï¿½Ç¶Èºï¿½XYZï¿½ï¿½Ä¿ï¿½ï¿½ï¿½Ù¶ï¿½
+u16 PID_Parameter[10], Flash_Parameter[10];	//Flashï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+float Position_KP = 40, Position_KI = 0, Position_KD = 40;	//Î»ï¿½Ã¿ï¿½ï¿½ï¿½PIDï¿½ï¿½ï¿½ï¿½
+float Velocity_KP = 10, Velocity_KI = 10;	//ï¿½Ù¶È¿ï¿½ï¿½ï¿½PIDï¿½ï¿½ï¿½ï¿½
+int RC_Velocity = 45, RC_Position = 3000;	//ï¿½ï¿½ï¿½ï¿½Ò£ï¿½Øµï¿½ï¿½Ù¶Èºï¿½Î»ï¿½ï¿½Öµ
 int PS2_LX, PS2_LY, PS2_RX, PS2_RY, PS2_KEY;
 int Gryo_Z;
 int
 main(void)
 {
-	Stm32_Clock_Init(9);	//=====ÏµÍ³Ê±ÖÓÉèÖÃ
-	delay_init(72);		//=====ÑÓÊ±³õÊ¼»¯
-	JTAG_Set(JTAG_SWD_DISABLE);	//=====¹Ø±ÕJTAG½Ó¿Ú
-	JTAG_Set(SWD_ENABLE);	//=====´ò¿ªSWD½Ó¿Ú ¿ÉÒÔÀûÓÃÖ÷°åµÄSWD½Ó¿Úµ÷ÊÔ
-	LED_Init();		//=====³õÊ¼»¯Óë LED Á¬½ÓµÄÓ²¼þ½Ó¿Ú
-	KEY_Init();		//=====°´¼ü³õÊ¼»¯
+	Stm32_Clock_Init(9);	//=====ÏµÍ³Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	delay_init(72);		//=====ï¿½ï¿½Ê±ï¿½ï¿½Ê¼ï¿½ï¿½
+	JTAG_Set(JTAG_SWD_DISABLE);	//=====ï¿½Ø±ï¿½JTAGï¿½Ó¿ï¿½
+	JTAG_Set(SWD_ENABLE);	//=====ï¿½ï¿½SWDï¿½Ó¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½SWDï¿½Ó¿Úµï¿½ï¿½ï¿½
+	LED_Init();		//=====ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ LED ï¿½ï¿½ï¿½Óµï¿½Ó²ï¿½ï¿½ï¿½Ó¿ï¿½
+	KEY_Init();		//=====ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½
 	if (MODE == 0)
-		Run_Flag = 1;	//=====Æô¶¯µÄ¹ý³ÌÖÐ£¬¸ù¾ÝÄ£Ê½Ñ¡Ôñ¿ª¹ØÈ·¶¨½øÈëÎ»ÖÃÄ£Ê½»¹ÊÇËÙ¶ÈÄ£Ê½
+		Run_Flag = 1;	//=====ï¿½ï¿½ï¿½ï¿½ï¿½Ä¹ï¿½ï¿½ï¿½ï¿½Ð£ï¿½ï¿½ï¿½ï¿½ï¿½Ä£Ê½Ñ¡ï¿½ñ¿ª¹ï¿½È·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½Ä£Ê½ï¿½ï¿½ï¿½ï¿½ï¿½Ù¶ï¿½Ä£Ê½
 	else
-		Run_Flag = 0;	//=====Æô¶¯µÄ¹ý³ÌÖÐ£¬¸ù¾ÝÄ£Ê½Ñ¡Ôñ¿ª¹ØÈ·¶¨½øÈëÎ»ÖÃÄ£Ê½»¹ÊÇËÙ¶ÈÄ£Ê½
-	OLED_Init();		//=====OLED³õÊ¼»¯
-	uart_init(72, 115200);	//=====´®¿Ú1³õÊ¼»¯
-	uart2_init(36, 9600);	//=====´®¿Ú2³õÊ¼»¯  Ä¬ÈÏÓëÀ¶ÑÀÁ¬½Ó
-	uart3_init(36, 115200);	//=====´®¿Ú3³õÊ¼»¯
-	Encoder_Init_TIM2();	//=====±àÂëÆ÷½Ó¿Ú
-	Encoder_Init_TIM3();	//=====±àÂëÆ÷½Ó¿Ú
-	Encoder_Init_TIM4();	//=====³õÊ¼»¯±àÂëÆ÷C
-	Encoder_Init_TIM5();	//=====³õÊ¼»¯±àÂëÆ÷D
-	Adc_Init();		//=====adc³õÊ¼»¯
-	IIC_Init();		//=====IIC³õÊ¼»¯
-	MPU6050_initialize();	//=====MPU6050³õÊ¼»¯
-	DMP_Init();		//=====³õÊ¼»¯DMP
-	MiniBalance_PWM_Init(7199, 0);	//=====³õÊ¼»¯PWM 10KHZ£¬ÓÃÓÚÇý¶¯µç»ú
+		Run_Flag = 0;	//=====ï¿½ï¿½ï¿½ï¿½ï¿½Ä¹ï¿½ï¿½ï¿½ï¿½Ð£ï¿½ï¿½ï¿½ï¿½ï¿½Ä£Ê½Ñ¡ï¿½ñ¿ª¹ï¿½È·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½Ä£Ê½ï¿½ï¿½ï¿½ï¿½ï¿½Ù¶ï¿½Ä£Ê½
+	OLED_Init();		//=====OLEDï¿½ï¿½Ê¼ï¿½ï¿½
+	uart_init(72, 115200);	//=====ï¿½ï¿½ï¿½ï¿½1ï¿½ï¿½Ê¼ï¿½ï¿½
+	uart2_init(36, 9600);	//=====ï¿½ï¿½ï¿½ï¿½2ï¿½ï¿½Ê¼ï¿½ï¿½  Ä¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	uart3_init(36, 115200);	//=====ï¿½ï¿½ï¿½ï¿½3ï¿½ï¿½Ê¼ï¿½ï¿½
+	Encoder_Init_TIM2();	//=====ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó¿ï¿½
+	Encoder_Init_TIM3();	//=====ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó¿ï¿½
+	Encoder_Init_TIM4();	//=====ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½C
+	Encoder_Init_TIM5();	//=====ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½D
+	Adc_Init();		//=====adcï¿½ï¿½Ê¼ï¿½ï¿½
+	IIC_Init();		//=====IICï¿½ï¿½Ê¼ï¿½ï¿½
+	MPU6050_initialize();	//=====MPU6050ï¿½ï¿½Ê¼ï¿½ï¿½
+	DMP_Init();		//=====ï¿½ï¿½Ê¼ï¿½ï¿½DMP
+	MiniBalance_PWM_Init(7199, 0);	//=====ï¿½ï¿½Ê¼ï¿½ï¿½PWM 10KHZï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	if (KEY == 0)
-		Flash_Read();	//=====¶ÁÈ¡FlashÀïÃæµÄ²ÎÊý
-	PS2_Init();		//=====ps2Çý¶¯¶Ë¿Ú³õÊ¼»¯
-	PS2_SetInit();		//=====ps2ÅäÖÃ³õÊ¼»¯,ÅäÖÃ¡°ºìÂÌµÆÄ£Ê½¡±£¬²¢Ñ¡ÔñÊÇ·ñ¿ÉÒÔÐÞ¸Ä
-	EXTI_Init();		//=====MPU6050 5ms¶¨Ê±ÖÐ¶Ï³õÊ¼»¯
-	CAN1_Mode_Init(1, 2, 3, 6, 0);	//=====CAN³õÊ¼»¯
+		Flash_Read();	//=====ï¿½ï¿½È¡Flashï¿½ï¿½ï¿½ï¿½Ä²ï¿½ï¿½ï¿½
+	PS2_Init();		//=====ps2ï¿½ï¿½ï¿½ï¿½ï¿½Ë¿Ú³ï¿½Ê¼ï¿½ï¿½
+	PS2_SetInit();		//=====ps2ï¿½ï¿½ï¿½Ã³ï¿½Ê¼ï¿½ï¿½,ï¿½ï¿½ï¿½Ã¡ï¿½ï¿½ï¿½ï¿½Ìµï¿½Ä£Ê½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñ¡ï¿½ï¿½ï¿½Ç·ï¿½ï¿½ï¿½ï¿½ï¿½Þ¸ï¿½
+	EXTI_Init();		//=====MPU6050 5msï¿½ï¿½Ê±ï¿½Ð¶Ï³ï¿½Ê¼ï¿½ï¿½
+	CAN1_Mode_Init(1, 2, 3, 6, 0);
 	while (1) {
-		if (Flash_Send == 1)	//Ð´ÈëPID²ÎÊýµ½Flash,ÓÉapp¿ØÖÆ¸ÃÖ¸Áî
+		if (Flash_Send == 1)
 		{
 			Flash_Write();
 			Flash_Send = 0;
 		}
-		if (Flag_Show == 0)	//Ê¹ÓÃMiniBalance APPºÍOLEDÏÔÊ¾ÆÁ
+		if (Flag_Show == 0)
 		{
 			APP_Show();
-			oled_show();	//===ÏÔÊ¾ÆÁ´ò¿ª
-		} else		//Ê¹ÓÃMiniBalanceÉÏÎ»»ú ÉÏÎ»»úÊ¹ÓÃµÄÊ±ºòÐèÒªÑÏ¸ñµÄÊ±Ðò£¬¹Ê´ËÊ±¹Ø±Õapp¼à¿Ø²¿·ÖºÍOLEDÏÔÊ¾ÆÁ
+			oled_show();
+		} else
 		{
-			DataScope();	//¿ªÆôMiniBalanceÉÏÎ»»ú
+			DataScope();
 		}
-		CAN1_SEND();	//CAN·¢ËÍ
-		PS2_Receive();	//PS2½ÓÊÕ
-		USART_TX();	//´®¿Ú·¢ËÍ
+		CAN1_SEND();
+		PS2_Receive();
+		USART_TX();
 		delay_flag = 1;
 		delay_50 = 0;
-		while (delay_flag) ;	//Í¨¹ýMPU6050µÄINTÖÐ¶ÏÊµÏÖµÄ50ms¾«×¼ÑÓÊ±
+		while (delay_flag);
 	}
 }

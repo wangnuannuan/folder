@@ -1,17 +1,17 @@
 #include "show.h"
 
-unsigned char i;		//¼ÆÊý±äÁ¿
-unsigned char Send_Count;	//´®¿ÚÐèÒª·¢ËÍµÄÊý¾Ý¸öÊý
+unsigned char i;		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+unsigned char Send_Count;	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½Íµï¿½ï¿½ï¿½ï¿½Ý¸ï¿½ï¿½ï¿½
 float Vol;
 /**************************************************************************
-º¯Êý¹¦ÄÜ£ºOLEDÏÔÊ¾
-Èë¿Ú²ÎÊý£ºÎÞ
-·µ»Ø  Öµ£ºÎÞ
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ü£ï¿½OLEDï¿½ï¿½Ê¾
+ï¿½ï¿½Ú²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½  Öµï¿½ï¿½ï¿½ï¿½
 **************************************************************************/
 void
 oled_show(void)
 {
-	//=============µÚ1ÐÐÏÔÊ¾3Öá½Ç¶È===============//    
+	//=============ï¿½ï¿½1ï¿½ï¿½ï¿½ï¿½Ê¾3ï¿½ï¿½Ç¶ï¿½===============//    
 	OLED_ShowString(0, 0, "X:");
 	if (Pitch < 0)
 		OLED_ShowNumber(15, 0, Pitch + 360, 3, 12);
@@ -30,9 +30,9 @@ oled_show(void)
 	else
 		OLED_ShowNumber(95, 0, Yaw, 3, 12);
 
-	if (Run_Flag == 0)	//ËÙ¶ÈÄ£Ê½
+	if (Run_Flag == 0)	//ï¿½Ù¶ï¿½Ä£Ê½
 	{
-		//=============ÏÔÊ¾µç»úAµÄ×´Ì¬=======================// 
+		//=============ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½Aï¿½ï¿½×´Ì¬=======================// 
 		if (Target_A < 0)
 			OLED_ShowString(00, 10, "-"),
 			    OLED_ShowNumber(15, 10, -Target_A, 5, 12);
@@ -46,7 +46,7 @@ oled_show(void)
 		else
 			OLED_ShowString(80, 10, "+"),
 			    OLED_ShowNumber(95, 10, Encoder_A, 4, 12);
-		//=============ÏÔÊ¾µç»úBµÄ×´Ì¬=======================// 
+		//=============ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½Bï¿½ï¿½×´Ì¬=======================// 
 		if (Target_B < 0)
 			OLED_ShowString(00, 20, "-"),
 			    OLED_ShowNumber(15, 20, -Target_B, 5, 12);
@@ -60,7 +60,7 @@ oled_show(void)
 		else
 			OLED_ShowString(80, 20, "+"),
 			    OLED_ShowNumber(95, 20, Encoder_B, 4, 12);
-		//=============ÏÔÊ¾µç»úCµÄ×´Ì¬=======================//        
+		//=============ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½Cï¿½ï¿½×´Ì¬=======================//        
 		if (Target_C < 0)
 			OLED_ShowString(00, 30, "-"),
 			    OLED_ShowNumber(15, 30, -Target_C, 5, 12);
@@ -74,7 +74,7 @@ oled_show(void)
 		else
 			OLED_ShowString(80, 30, "+"),
 			    OLED_ShowNumber(95, 30, Encoder_C, 4, 12);
-		//=============ÏÔÊ¾µç»úDµÄ×´Ì¬=======================// 
+		//=============ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½Dï¿½ï¿½×´Ì¬=======================// 
 		if (Target_D < 0)
 			OLED_ShowString(00, 40, "-"),
 			    OLED_ShowNumber(15, 40, -Target_D, 5, 12);
@@ -88,9 +88,9 @@ oled_show(void)
 		else
 			OLED_ShowString(80, 40, "+"),
 			    OLED_ShowNumber(95, 40, Encoder_D, 4, 12);
-	} else if (Run_Flag == 1)	//Î»ÖÃÄ£Ê½
+	} else if (Run_Flag == 1)	//Î»ï¿½ï¿½Ä£Ê½
 	{
-		//=============ÏÔÊ¾µç»úAµÄ×´Ì¬=======================//     
+		//=============ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½Aï¿½ï¿½×´Ì¬=======================//     
 		if (Target_A < 0)
 			OLED_ShowString(00, 10, "-"),
 			    OLED_ShowNumber(15, 10, -Target_A, 5, 12);
@@ -104,7 +104,7 @@ oled_show(void)
 		else
 			OLED_ShowString(80, 10, "+"),
 			    OLED_ShowNumber(95, 10, Position_A, 4, 12);
-		//=============ÏÔÊ¾µç»úBµÄ×´Ì¬=======================// 
+		//=============ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½Bï¿½ï¿½×´Ì¬=======================// 
 		if (Target_B < 0)
 			OLED_ShowString(00, 20, "-"),
 			    OLED_ShowNumber(15, 20, -Target_B, 5, 12);
@@ -118,7 +118,7 @@ oled_show(void)
 		else
 			OLED_ShowString(80, 20, "+"),
 			    OLED_ShowNumber(95, 20, Position_B, 4, 12);
-		//=============ÏÔÊ¾µç»úCµÄ×´Ì¬=======================//        
+		//=============ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½Cï¿½ï¿½×´Ì¬=======================//        
 		if (Target_C < 0)
 			OLED_ShowString(00, 30, "-"),
 			    OLED_ShowNumber(15, 30, -Target_C, 5, 12);
@@ -132,7 +132,7 @@ oled_show(void)
 		else
 			OLED_ShowString(80, 30, "+"),
 			    OLED_ShowNumber(95, 30, Position_C, 4, 12);
-		//=============ÏÔÊ¾µç»úDµÄ×´Ì¬=======================// 
+		//=============ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½Dï¿½ï¿½×´Ì¬=======================// 
 		if (Target_D < 0)
 			OLED_ShowString(00, 40, "-"),
 			    OLED_ShowNumber(15, 40, -Target_D, 5, 12);
@@ -147,7 +147,7 @@ oled_show(void)
 			OLED_ShowString(80, 40, "+"),
 			    OLED_ShowNumber(95, 40, Position_D, 4, 12);
 	}
-	//=============µÚÎåÐÐÏÔÊ¾µçÑ¹=======================//
+	//=============ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½Ñ¹=======================//
 	if (Run_Flag == 0)
 		OLED_ShowString(00, 50, "VELOCITY");
 	else if (Run_Flag == 1)
@@ -158,14 +158,14 @@ oled_show(void)
 	OLED_ShowNumber(98, 50, Voltage % 100, 2, 12);
 	if (Voltage % 100 < 10)
 		OLED_ShowNumber(92, 50, 0, 2, 12);
-	//=============Ë¢ÐÂ=======================//
+	//=============Ë¢ï¿½ï¿½=======================//
 	OLED_Refresh_Gram();
 }
 
 /**************************************************************************
-º¯Êý¹¦ÄÜ£ºÏòAPP·¢ËÍÊý¾Ý
-Èë¿Ú²ÎÊý£ºÎÞ
-·µ»Ø  Öµ£ºÎÞ
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ü£ï¿½ï¿½ï¿½APPï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+ï¿½ï¿½Ú²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½  Öµï¿½ï¿½ï¿½ï¿½
 **************************************************************************/
 void
 APP_Show(void)
@@ -174,42 +174,37 @@ APP_Show(void)
 	int app_2, app_3, app_4;
 	app_4 = (Voltage / 2 - 1110) * 2 / 3;
 	if (app_4 > 100)
-		app_4 = 100;	//¶ÔµçÑ¹Êý¾Ý½øÐÐ´¦Àí
+		app_4 = 100;	//ï¿½Ôµï¿½Ñ¹ï¿½ï¿½ï¿½Ý½ï¿½ï¿½Ð´ï¿½ï¿½ï¿½
 	app_2 = Move_X * 0.7;
 	if (app_2 < 0)
-		app_2 = -app_2;	//¶Ô±àÂëÆ÷Êý¾Ý¾ÍÐÐÊý¾Ý´¦Àí±ãÓÚÍ¼ÐÎ»¯
+		app_2 = -app_2;	//ï¿½Ô±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¼ï¿½Î»ï¿½
 	app_3 = Move_Y * 0.7;
 	if (app_3 < 0)
 		app_3 = -app_3;
 	if (Run_Flag == 1)
 		app_2 = 0, app_3 = 0;
 	flag = !flag;
-	if (PID_Send == 1)	//·¢ËÍPID²ÎÊý
+	if (PID_Send == 1)	//ï¿½ï¿½ï¿½ï¿½PIDï¿½ï¿½ï¿½ï¿½
 	{
-		printf("{C%d:%d:%d:%d:%d:%d:%d:%d:%d}$", (int) RC_Velocity, (int) RC_Position, (int) Position_KP, (int) Position_KI, (int) Position_KD, (int) Velocity_KP, (int) Velocity_KI, 0, 0);	//´òÓ¡µ½APPÉÏÃæ     
+		printf("{C%d:%d:%d:%d:%d:%d:%d:%d:%d}$", (int) RC_Velocity, (int) RC_Position, (int) Position_KP, (int) Position_KI, (int) Position_KD, (int) Velocity_KP, (int) Velocity_KI, 0, 0);	//ï¿½ï¿½Ó¡ï¿½ï¿½APPï¿½ï¿½ï¿½ï¿½     
 		PID_Send = 0;
 	} else if (flag == 0)	// 
-		printf("{A%d:%d:%d:%d}$", (u8) app_2, (u8) app_3, app_4, 0);	//´òÓ¡µ½APPÉÏÃæ
+		printf("{A%d:%d:%d:%d}$", (u8) app_2, (u8) app_3, app_4, 0);	//ï¿½ï¿½Ó¡ï¿½ï¿½APPï¿½ï¿½ï¿½ï¿½
 	else
-		printf("{B%d:%d:%d:%d}$", (int) Pitch, (int) Roll, (int) Yaw, app_4);	//´òÓ¡µ½APPÉÏÃæ ÏÔÊ¾²¨ÐÎ
+		printf("{B%d:%d:%d:%d}$", (int) Pitch, (int) Roll, (int) Yaw, app_4);	//ï¿½ï¿½Ó¡ï¿½ï¿½APPï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½
 }
 
-/**************************************************************************
-º¯Êý¹¦ÄÜ£ºÐéÄâÊ¾²¨Æ÷ÍùÉÏÎ»»ú·¢ËÍÊý¾Ý ¹Ø±ÕÏÔÊ¾ÆÁ
-Èë¿Ú²ÎÊý£ºÎÞ
-·µ»Ø  Öµ£ºÎÞ
-**************************************************************************/
 void
 DataScope(void)
 {
-	if (Run_Flag == 0)	//ËÙ¶ÈÄ£Ê½
+	if (Run_Flag == 0)	//ï¿½Ù¶ï¿½Ä£Ê½
 	{
-		DataScope_Get_Channel_Data(Encoder_A, 1);	//ÏÔÊ¾Ä¿±êÖµ
-		DataScope_Get_Channel_Data(Encoder_B, 2);	//ÏÔÊ¾Êµ¼ÊÖµ£¬±ãÓÚPID²ÎÊýµ÷½Ú  
+		DataScope_Get_Channel_Data(Encoder_A, 1);	//ï¿½ï¿½Ê¾Ä¿ï¿½ï¿½Öµ
+		DataScope_Get_Channel_Data(Encoder_B, 2);	//ï¿½ï¿½Ê¾Êµï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½PIDï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½  
 		DataScope_Get_Channel_Data(Encoder_C, 3);
 		DataScope_Get_Channel_Data(Encoder_D, 4);
 
-	} else			//Î»ÖÃÄ£Ê½
+	} else			//Î»ï¿½ï¿½Ä£Ê½
 	{
 		DataScope_Get_Channel_Data(Position_A, 1);
 		DataScope_Get_Channel_Data(Position_B, 2);
