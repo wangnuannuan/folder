@@ -6,7 +6,9 @@ COPY install_skip.sh .
 #     remove ros-* \
 #     ros-melodic-* \
 #     && apt-get autoremove \
-RUN && apt update  && apt-get install -y python3 \
+RUN apt-get remove python-* \
+    && apt-get autoremove
+RUN apt update  && apt-get install -y python3 \
     python3-dev \
     python3-pip \
     build-essentia \
