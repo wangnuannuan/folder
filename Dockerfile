@@ -16,9 +16,9 @@ RUN apt update  && apt-get install -y python3 \
     rosinstall \
     wstool \
     vcstools \
-    catkin_tools
-RUN catkin_pkg \
-    && rosdep init \
+    catkin_tools \
+    catkin_pkg
+RUN rosdep init \
     && rosdep update \
     && cd ~ \
     && mkdir ros_catkin_ws \
