@@ -10,6 +10,7 @@ RUN apt-get remove python-* \
     python3-dev \
     python3-pip \
     build-essentia \
+    wget \
     && pip3 install rosdep \ 
     rospkg \
     rosinstall_generator \
@@ -17,7 +18,6 @@ RUN apt-get remove python-* \
     wstool \
     vcstools \
     catkin_tools \
-    wget
 RUN catkin_pkg \
     && rosdep init \
     && rosdep update \
