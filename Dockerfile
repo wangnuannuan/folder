@@ -11,5 +11,5 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libavcodec-dev libavformat-dev libswscale-dev libv4l-dev \
     wget
 
-RUN wget http://repo.continuum.io/miniconda/Miniconda3-latest-Linux-armv7l.sh
-    bash Miniconda3-latest-Linux-armv7l.sh -b
+RUN wget http://repo.continuum.io/miniconda/Miniconda3-latest-Linux-armv7l.sh \
+    /Miniconda3-latest-Linux-armv7l.sh -b
