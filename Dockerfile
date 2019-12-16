@@ -19,7 +19,7 @@ RUN apt-get remove python-* \
     catkin_tools \
 RUN catkin_pkg \
     && rosdep init \
-    && rosdep update
+    && rosdep update \
     && cd ~ \
     && mkdir ros_catkin_ws \
     && cd ros_catkin_ws \
