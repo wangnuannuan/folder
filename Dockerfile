@@ -20,13 +20,13 @@ RUN apt-get remove python-* \
 RUN catkin_pkg \
     && rosdep init \
     && rosdep update
-    && cd ~
-    && mkdir ros_catkin_ws
-    && cd ros_catkin_ws
-    && catkin config --init -DCMAKE_BUILD_TYPE=Release --blacklist rqt_rviz rviz_plugin_tutorials librviz_tutorial --install
-    && rosinstall_generator desktop_full --rosdistro melodic --deps --tar > melodic-desktop-full.rosinstall
-    && wstool init -j8 src melodic-desktop-full.rosinstall
-    && export ROS_PYTHON_VERSION=3
+    && cd ~ \
+    && mkdir ros_catkin_ws \
+    && cd ros_catkin_ws \
+    && catkin config --init -DCMAKE_BUILD_TYPE=Release --blacklist rqt_rviz rviz_plugin_tutorials librviz_tutorial --install \
+    && rosinstall_generator desktop_full --rosdistro melodic --deps --tar > melodic-desktop-full.rosinstall \
+    && wstool init -j8 src melodic-desktop-full.rosinstall \
+    && export ROS_PYTHON_VERSION=3 \
     && pip3 install -U -f https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-18.04 wxPython
 
 COPY install_skip.sh .
