@@ -12,4 +12,5 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     wget
 
 RUN wget http://repo.continuum.io/miniconda/Miniconda3-latest-Linux-armv7l.sh \
-    /Miniconda3-latest-Linux-armv7l.sh -b
+    /Miniconda3-latest-Linux-armv7l.sh -b \
+    python -V
