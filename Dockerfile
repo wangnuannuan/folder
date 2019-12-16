@@ -1,7 +1,7 @@
 FROM debian:stable
 
 MAINTAINER Jingru <1961295051@qq.com>
-
+COPY install_skip.sh .
 RUN apt-get remove python-* \
     remove ros-* \
     ros-melodic-* \
@@ -28,9 +28,8 @@ RUN catkin_pkg \
     && rosinstall_generator desktop_full --rosdistro melodic --deps --tar > melodic-desktop-full.rosinstall \
     && wstool init -j8 src melodic-desktop-full.rosinstall \
     && export ROS_PYTHON_VERSION=3 \
-    && pip3 install wxPython==4.0.0b1 \
+    && pip3 install wxPython==4.0.0b1
 
-COPY install_skip.sh .
 RUN ./install_skip.sh `rosdep check --from-paths src --ignore-src | grep python | sed -e "s/^apt\t//g" | sed -z "s/\n/ /g" | sed -e "s/python/python3/g"` \
     && rosdep install --from-paths src --ignore-src -y --skip-keys="`rosdep check --from-paths src --ignore-src | grep python | sed -e "s/^apt\t//g" | sed -z "s/\n/ /g"`" \
     && find . -type f -exec sed -i 's/\/usr\/bin\/env[ ]*python/\/usr\/bin\/env python3/g' {} + \
