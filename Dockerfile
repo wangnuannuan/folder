@@ -19,8 +19,8 @@ RUN apt update  && apt-get install -y python3 \
     catkin_tools \
     catkin_pkg
 RUN rosdep init
-RUN rosdep update \
-    && cd ~ \
+RUN rosdep update
+RUN cd ~ \
     && mkdir ros_catkin_ws \
     && cd ros_catkin_ws \
     && catkin config --init -DCMAKE_BUILD_TYPE=Release --blacklist rqt_rviz rviz_plugin_tutorials librviz_tutorial --install \
