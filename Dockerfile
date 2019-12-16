@@ -18,8 +18,8 @@ RUN apt update  && apt-get install -y python3 \
     vcstools \
     catkin_tools \
     catkin_pkg
-RUN rosdep init \
-    && rosdep update \
+RUN rosdep init
+RUN rosdep update \
     && cd ~ \
     && mkdir ros_catkin_ws \
     && cd ros_catkin_ws \
