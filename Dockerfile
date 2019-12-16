@@ -24,7 +24,7 @@ RUN rosdep init \
     && mkdir ros_catkin_ws \
     && cd ros_catkin_ws
 
-RUN pip3 uninstall trollius
+RUN pip3 uninstall trollius -y
 RUN catkin config --init -DCMAKE_BUILD_TYPE=Release --blacklist rqt_rviz rviz_plugin_tutorials librviz_tutorial --install
 RUN rosinstall_generator desktop_full --rosdistro melodic --deps --tar > melodic-desktop-full.rosinstall \
     && wstool init -j8 src melodic-desktop-full.rosinstall \
