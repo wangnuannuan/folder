@@ -13,7 +13,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     python-catkin-tools python3-dev python3-numpy
 
 RUN wget http://repo.continuum.io/miniconda/Miniconda3-latest-Linux-armv7l.sh
-COPY Miniconda3-latest-Linux-armv7l.sh
+COPY Miniconda3-latest-Linux-armv7l.sh .
 RUN ./Miniconda3-latest-Linux-armv7l.sh -b
     python -V
 RUN mkdir ~/catkin_build_ws && cd ~/catkin_build_ws 
