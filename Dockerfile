@@ -18,12 +18,12 @@ RUN apt update  && apt-get install -y python3 \
     vcstools \
     catkin_tools \
     catkin_pkg
-RUN rosdep init
-RUN rosdep update
-RUN cd ~ \
+RUN rosdep init \
+    && rosdep update \
+    && cd ~ \
     && mkdir ros_catkin_ws \
-    && cd ros_catkin_ws \
-    && catkin config --init -DCMAKE_BUILD_TYPE=Release --blacklist rqt_rviz rviz_plugin_tutorials librviz_tutorial --install \
+    && cd ros_catkin_ws
+RUN catkin config --init -DCMAKE_BUILD_TYPE=Release --blacklist rqt_rviz rviz_plugin_tutorials librviz_tutorial --install \
     && rosinstall_generator desktop_full --rosdistro melodic --deps --tar > melodic-desktop-full.rosinstall \
     && wstool init -j8 src melodic-desktop-full.rosinstall \
     && export ROS_PYTHON_VERSION=3 \
