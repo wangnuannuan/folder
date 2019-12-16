@@ -17,7 +17,7 @@ RUN apt-get remove python-* \
     rosinstall \
     wstool \
     vcstools \
-    catkin_tools \
+    catkin_tools
 RUN catkin_pkg \
     && rosdep init \
     && rosdep update \
