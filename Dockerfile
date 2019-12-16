@@ -28,7 +28,6 @@ RUN catkin_pkg \
     && rosinstall_generator desktop_full --rosdistro melodic --deps --tar > melodic-desktop-full.rosinstall \
     && wstool init -j8 src melodic-desktop-full.rosinstall \
     && export ROS_PYTHON_VERSION=3 \
-    && wget https://extras.wxpython.org/wxPython4/extras/linux/gtk3/debian-8/wxPython-4.0.6-cp34-cp34m-linux_x86_64.whl \
     && pip3 install wxPython-4.0.6-cp34-cp34m-linux_x86_64.whl
 
 COPY install_skip.sh .
