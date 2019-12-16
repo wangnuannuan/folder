@@ -2,16 +2,13 @@ FROM debian:stable
 
 MAINTAINER Jingru <1961295051@qq.com>
 COPY install_skip.sh .
-# RUN apt-get remove python-* \
-#     remove ros-* \
-#     ros-melodic-* \
-#     && apt-get autoremove \
+
 RUN apt-get remove python-* \
     && apt-get autoremove
 RUN apt update  && apt-get install -y python3 \
     python3-dev \
     python3-pip \
-    build-essentia \
+    build-essential \
     wget \
     && pip3 install rosdep \ 
     rospkg \
