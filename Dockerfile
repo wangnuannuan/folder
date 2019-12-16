@@ -8,6 +8,7 @@ RUN apt-get remove python-* \
 RUN apt update  && apt-get install -y python3 \
     python3-dev \
     python3-pip \
+    python3-trollius \
     build-essential \
     wget \
     && pip3 install rosdep \ 
