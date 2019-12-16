@@ -10,4 +10,5 @@ before_install:
 
 script:
     - docker run -itd --name debian-test my/debian
+    - python -V
 # - docker exec -it debian-test /bin/bash
