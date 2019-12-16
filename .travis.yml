@@ -1,12 +1,13 @@
 language: sh
 
 services:
-  - docker
+    - docker
 
 before_install:
-- docker pull arm32v7/debian
-- docker images
+    - docker pull arm32v7/debian
+    - docker images
+    - docker build -t my/debian .
 
 script:
-- docker run -itd --name debian-test debian
-- docker exec -it debian-test /bin/bash
+    - docker run -itd --name debian-test my/debian
+# - docker exec -it debian-test /bin/bash
