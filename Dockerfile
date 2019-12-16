@@ -23,8 +23,8 @@ RUN rosdep init \
     && cd ~ \
     && mkdir ros_catkin_ws \
     && cd ros_catkin_ws
-RUN catkin config --init -DCMAKE_BUILD_TYPE=Release --blacklist rqt_rviz rviz_plugin_tutorials librviz_tutorial --install \
-    && rosinstall_generator desktop_full --rosdistro melodic --deps --tar > melodic-desktop-full.rosinstall \
+RUN catkin config --init -DCMAKE_BUILD_TYPE=Release --blacklist rqt_rviz rviz_plugin_tutorials librviz_tutorial --install
+RUN rosinstall_generator desktop_full --rosdistro melodic --deps --tar > melodic-desktop-full.rosinstall \
     && wstool init -j8 src melodic-desktop-full.rosinstall \
     && export ROS_PYTHON_VERSION=3 \
     && pip3 install wxPython
