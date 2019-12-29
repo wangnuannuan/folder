@@ -5,8 +5,8 @@ MAINTAINER Jingru <1961295051@qq.com>
 RUN apt update  && apt-get install -y autoconf \
     autogen \
     git
-RUN git clone https://github.com/protocolbuffers/protobuf.git \
-    && cd protobuf \
+RUN git clone https://github.com/protocolbuffers/protobuf.git
+RUN cd protobuf \
     && git submodule update --init --recursive \
     && ./autogen.sh \
     && ./configure \
