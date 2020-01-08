@@ -6,7 +6,8 @@ RUN apt update  && apt-get install -y autoconf \
     autogen \
     git
 RUN git clone https://github.com/protocolbuffers/protobuf.git \
-    && cd protobuf
+    && cd protobuf \
+    && ls
 RUN git submodule update --init --recursive \
     && ./autogen.sh \
     && ./configure \
