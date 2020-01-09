@@ -22,7 +22,8 @@ RUN rosdep init \
     && rosdep update \
     && cd ~ \
     && mkdir ros_catkin_ws \
-    && cd ros_catkin_ws
+    && cd ros_catkin_ws \
+    && ls
 
 RUN pip3 uninstall trollius -y
 RUN catkin config --init -DCMAKE_BUILD_TYPE=Release --blacklist rqt_rviz rviz_plugin_tutorials librviz_tutorial --install
