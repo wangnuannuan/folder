@@ -1,0 +1,218 @@
+def platforms = params.platforms.split(',')
+pipeline {
+  agent any
+  options {
+      timeout(time: 6, unit: 'HOURS')
+      skipDefaultCheckout()
+      buildDiscarder(
+          logRotator(daysToKeepStr: '3', numToKeepStr:'2', artifactDaysToKeepStr: '1'))
+  }
+  triggers {
+      cron('0 0 * * *')
+  }
+  //environment {
+   // ZEPHYR_TOOLCHAIN_VARIANT="zephyr" //"gnuarcemb" //
+   // SDK="0.10.3"
+   // // GNUARCEMB_TOOLCHAIN_PATH="/global/freeware/Linux/2.X/arc_gnu_2019.03-elf32/bin"
+  //}
+
+  stages {
+    stage("Cancel Previous Builds") {
+        steps {
+          script {
+            cancelPreviousBuilds()
+            dir ('archive') {
+                deleteDir()
+            }
+          }
+
+        }
+    }
+    stage('Run_on_nism') {
+        steps {
+            script {
+                def sanitychecks = [:]
+                for (int i = 0; i < platforms.length; i++) {
+                    def stage_name = platforms[i]
+                    sanitychecks["${stage_name}"] = {
+                        node('gp&&linux&&us01') {
+                            stage("${stage_name}") {
+                                before_install()
+                                build_script()
+                                archiveArtifacts artifacts: '**/*.csv', fingerprint: true
+
+                            }
+                        }
+                    }
+                }
+                parallel sanitychecks
+            }
+        }
+    }
+    stage('Deploy') {
+        steps {
+
+          build job: 'zephyrproject-rtos/zephyr_deploy', parameters: [string(name: 'U_JOB_NAME', value: env.JOB_NAME),string(name: 'U_BUILD_NUM', value: env.BUILD_NUMBER),string(name: 'GIT_URL', value: GIT_URL),string(name: 'GIT_COMMIT', value: GIT_COMMIT)]  //this is where we specify which job to invoke.
+
+        }
+    }
+  }
+  post { 
+      always { 
+          cleanWs()
+      }
+  } 
+
+}
+
+void before_install() {
+    sh '''
+      #exec 1>/dev/null 2>&1
+      source /global/etc/modules.sh
+      module load git
+      module load arcnsim
+      module load gmake/3.82
+      module load python/3.7.0
+      python -m pip install --upgrade pip --user 
+      python -m pip install west --user 
+      python -m pip install serial --user 
+      python -m pip install ply --user 
+      python -m pip install cmake --user 
+      python -m pip install wheel --user 
+      python -m pip install PyYAML --user 
+      python -m pip install gitlint --user 
+      python -m pip install pyelftools --user 
+      python -m pip install pyserial --user
+      python -m pip install XlsxWriter --user
+      python -m pip install chardet --user
+
+      root_workspce=${WORKSPACE%%workspace*}workspace
+      rm -rf $root_workspce/.west || true
+      rm -rf $root_workspce/modules || true
+      rm -rf $root_workspce/tools || true
+      rm -rf $root_workspce/*_multibranch_sanitycheck* || true 
+      rm -rf $root_workspce/*_multibranch_feature_arc_fixes* || true
+
+      rm -rf $WORKSPACE/*
+      mkdir -p $WORKSPACE/$STAGE_NAME
+      rm -rf $WORKSPACE/$STAGE_NAME/*
+      cd $WORKSPACE/$STAGE_NAME
+
+      if [ "${CAUSE}" == *"timer"* ]; then
+        git clone --depth 1 https://github.com/zephyrproject-rtos/zephyr.git zephyr_${STAGE_NAME}
+      else
+        git clone --depth 1 -b sanitycheck https://github.com/foss-for-synopsys-dwc-arc-processors/zephyr.git zephyr_${STAGE_NAME}
+      fi
+
+      cd zephyr_${STAGE_NAME}
+      if [ "$STAGE_NAME" != "Deploy" ]; then
+        
+        if [ ! -d "cur_dtc" ]; then
+          echo "install dtc and gpref"
+          mkdir -p cur_dtc
+          cd cur_dtc
+          if [ ! -f "dtc-1.4.6-1.el7.x86_64.rpm" ]; then
+            wget http://mirror.centos.org/centos/7/extras/x86_64/Packages/dtc-1.4.6-1.el7.x86_64.rpm -q
+          fi
+          rpm2cpio dtc-1.4.6-1.el7.x86_64.rpm | cpio -di
+
+          if [ ! -f "gperf-3.0.4-8.el7.x86_64.rpm" ]; then
+            wget http://mirror.centos.org/centos/7/os/x86_64/Packages/gperf-3.0.4-8.el7.x86_64.rpm -q
+          fi
+          rpm2cpio gperf-3.0.4-8.el7.x86_64.rpm | cpio -di
+          cd ..
+        fi
+
+        if [ ! -d "$WORKSPACE/$STAGE_NAME/zephyr_${STAGE_NAME}/zephyr-sdk" ]; then
+          cp -R /u/jingru/zephyr-sdk $WORKSPACE/$STAGE_NAME/zephyr_${STAGE_NAME}
+        fi
+
+        # To save disk
+        find $WORKSPACE/$STAGE_NAME/zephyr_${STAGE_NAME} -iname '*.rst' -delete
+        find $WORKSPACE/$STAGE_NAME/zephyr_${STAGE_NAME} -iname '*.md' -delete
+        rm -rf $WORKSPACE/$STAGE_NAME/zephyr_${STAGE_NAME}/doc
+        rm -rf $WORKSPACE/$STAGE_NAME/zephyr_${STAGE_NAME}/cur_dtc/*.rpm
+      fi
+      echo "$WORKSPACE/$STAGE_NAME/zephyr_${STAGE_NAME}/cur_dtc/usr/bin:$HOME/.local/bin:$PATH" > env.prop
+    '''
+}
+
+void build_script() {
+  sh '''
+    cd $WORKSPACE/$STAGE_NAME
+    MATRIX=${STAGE_NAME}
+    INJECT_PATH=$(cat $WORKSPACE/$STAGE_NAME/zephyr_${STAGE_NAME}/env.prop)
+    export ZEPHYR_SDK_INSTALL_DIR=$WORKSPACE/$STAGE_NAME/zephyr_${STAGE_NAME}/zephyr-sdk
+    export PATH=$INJECT_PATH
+    export LD_LIBRARY_PATH="/global/freeware/Linux/RHEL6/python-3.7.0/lib:/global/freeware/Linux/RHEL6/python-3.7.0/deps/lib:/global/freeware/Linux/RHEL6/python-3.7.0/deps/tcl-8.6.8/lib:/global/freeware/Linux/RHEL6/python-3.7.0/deps/tk-8.6.8/lib:/global/freeware/Linux/RHEL6/python-3.7.0/libs:/global/freeware/Linux/RHEL6/glibc-2.14/lib:$LD_LIBRARY_PATH"
+    
+    mkdir -p $WORKSPACE/$STAGE_NAME/.west
+    rm -rf $WORKSPACE/$STAGE_NAME/.west/*
+    echo "[manifest]" >> $WORKSPACE/$STAGE_NAME/.west/config
+    echo "path = zephyr_${STAGE_NAME}" >> $WORKSPACE/$STAGE_NAME/.west/config
+    echo  "[zephyr]" >> $WORKSPACE/$STAGE_NAME/.west/config
+    echo  "base = zephyr" >> $WORKSPACE/$STAGE_NAME/.west/config
+    west update || true
+
+    cd $WORKSPACE/$STAGE_NAME/zephyr_${STAGE_NAME}
+
+    # mkdir -p /dev/shm/$NAME_${STAGE_NAME}
+    OUTDIR=$WORKSPACE/$STAGE_NAME/zephyr_${STAGE_NAME}/nsim #/dev/shm/$NAME_${STAGE_NAME}
+    source $WORKSPACE/$STAGE_NAME/zephyr_${STAGE_NAME}/zephyr-env.sh
+
+    SANITYCHECK="${ZEPHYR_BASE}/scripts/sanitycheck"
+    if [ ! -d "$WORKSPACE/archive" ]; then
+      mkdir $WORKSPACE/archive
+      
+    fi
+    rm -rf $WORKSPACE/archive/*
+
+    echo "Run ${SANITYCHECK} --load-tests test_file_${STAGE_NAME}.txt -p ${i} -O ${OUTDIR} -o ${STAGE_NAME}_result--inline-logs --retry-failed 3"
+    timeout 120m ${SANITYCHECK} --arch arc -T ${testcase_root} -p ${STAGE_NAME} -O ${OUTDIR} -o ${STAGE_NAME}_result --inline-logs --retry-failed 3 || true
+    if [ ! -f "$WORKSPACE/$STAGE_NAME/zephyr_${STAGE_NAME}/${STAGE_NAME}_result/sanitycheck.csv" ]; then
+        echo "Timeout, run again..."
+        timeout 120m ${SANITYCHECK} --arch arc -T ${testcase_root}  -p ${STAGE_NAME} -O ${OUTDIR} -o ${STAGE_NAME}_result --inline-logs --retry-failed 3 || true
+    fi
+    if [ -f "$WORKSPACE/$STAGE_NAME/zephyr_${STAGE_NAME}/${STAGE_NAME}_result/sanitycheck.csv" ]; then
+        mv "$WORKSPACE/$STAGE_NAME/zephyr_${STAGE_NAME}/${STAGE_NAME}_result/sanitycheck.csv" $WORKSPACE/archive/${STAGE_NAME}_result.csv
+    fi
+    rm -rf ${OUTDIR}
+            
+    echo PATH="$WORKSPACE/$STAGE_NAME/zephyr_${STAGE_NAME}/cur_dtc/usr/bin:$HOME/.local/bin:$PATH" >> env.prop
+    echo LD_LIBRARY_PATH="/global/freeware/Linux/RHEL6/python-3.7.0/lib:/global/freeware/Linux/RHEL6/python-3.7.0/deps/lib:/global/freeware/Linux/RHEL6/python-3.7.0/deps/tcl-8.6.8/lib:/global/freeware/Linux/RHEL6/python-3.7.0/deps/tk-8.6.8/lib:/global/freeware/Linux/RHEL6/python-3.7.0/libs:/global/freeware/Linux/RHEL6/glibc-2.14/lib:$LD_LIBRARY_PATH" >> env.prop
+
+    git rev-parse HEAD >> $WORKSPACE/git_info.prop
+    git config --get remote.origin.url >> $WORKSPACE/git_info.prop
+  '''
+  script {
+    GIT_COMMIT = sh(returnStdout: true, script: 'sed -n 1p git_info.prop')
+    GIT_URL = sh(returnStdout: true, script: 'sed -n 2p git_info.prop')
+  }
+}
+
+/* This method should be added to your Jenkinsfile and called at the very beginning of the build*/
+@NonCPS
+def cancelPreviousBuilds() {
+  def buildNumber = env.BUILD_NUMBER as int
+  if (buildNumber > 1) milestone(buildNumber - 1)
+  milestone(buildNumber)
+}
+
+void parallel_stages() {
+    for (int i = 0; i < platforms.length; i++) {
+        stage("${platforms[i]}") {
+            agent { 
+                node { 
+                    label 'gp&&linux&&us01' 
+                } 
+            }
+            steps {
+                before_install()
+                build_script()
+                script{
+                    archiveArtifacts artifacts: '**/*.csv', fingerprint: true
+                }
+            }
+        }
+    }
+}
